@@ -33,12 +33,14 @@
 import os
 import tempfile
 
+ROS_ROOT = 'AMENT_PREFIX_PATH'
+ROS_PACKAGE_PATH = 'AMENT_PREFIX_PATH'
 
 def test_get_ros_root():
     from rospkg import get_ros_root
     assert get_ros_root(env={}) is None
 
-    env = {'ROS_ROOT': '/fake/path'}
+    env = {ROS_ROOT: '/fake/path'}
     assert '/fake/path' == get_ros_root(env=env)
 
     real_ros_root = get_ros_root()
@@ -46,19 +48,19 @@ def test_get_ros_root():
     if real_ros_root is not None:
         # make sure that ros root is a directory
         p = os.path.join(real_ros_root, 'Makefile')
-        env = {'ROS_ROOT': p}
+        env = {ROS_ROOT: p}
         assert p == get_ros_root(env=env)
 
 
 def test_get_ros_package_path():
     from rospkg import get_ros_package_path
     assert get_ros_package_path(env={}) is None
-    env = {'ROS_PACKAGE_PATH': ':'}
+    env = {ROS_PACKAGE_PATH: ':'}
     assert ':' == get_ros_package_path(env=env)
 
     # trip-wire tests. Cannot guarantee that ROS_PACKAGE_PATH is set
     # to valid value on test machine, just make sure logic doesn't crash
-    assert os.environ.get('ROS_PACKAGE_PATH', None) == get_ros_package_path()
+    assert os.environ.get(ROS_PACKAGE_PATH, None) == get_ros_package_path()
 
 
 def test_get_log_dir():
@@ -69,13 +71,13 @@ def test_get_log_dir():
     home_dir = os.path.expanduser('~')
 
     # ROS_LOG_DIR has precedence
-    env = {'ROS_ROOT': get_ros_root(), 'ROS_LOG_DIR': ros_log_dir, 'ROS_HOME': ros_home_dir}
+    env = {ROS_ROOT: get_ros_root(), 'ROS_LOG_DIR': ros_log_dir, 'ROS_HOME': ros_home_dir}
     assert ros_log_dir == get_log_dir(env=env)
 
-    env = {'ROS_ROOT': get_ros_root(), 'ROS_HOME': ros_home_dir}
+    env = {ROS_ROOT: get_ros_root(), 'ROS_HOME': ros_home_dir}
     assert os.path.join(ros_home_dir, 'log') == get_log_dir(env=env)
 
-    env = {'ROS_ROOT': get_ros_root()}
+    env = {ROS_ROOT: get_ros_root()}
     assert os.path.join(home_dir, '.ros', 'log') == get_log_dir(env=env)
 
     # test default assignment of env. Don't both checking return value as we would duplicate get_log_dir
@@ -90,13 +92,13 @@ def test_get_test_results_dir():
     home_dir = os.path.expanduser('~')
 
     # ROS_TEST_RESULTS_DIR has precedence
-    env = {'ROS_ROOT': get_ros_root(), 'ROS_TEST_RESULTS_DIR': ros_test_results_dir, 'ROS_HOME': ros_home_dir}
+    env = {ROS_ROOT: get_ros_root(), 'ROS_TEST_RESULTS_DIR': ros_test_results_dir, 'ROS_HOME': ros_home_dir}
     assert ros_test_results_dir == get_test_results_dir(env=env)
 
-    env = {'ROS_ROOT': get_ros_root(), 'ROS_HOME': ros_home_dir}
+    env = {ROS_ROOT: get_ros_root(), 'ROS_HOME': ros_home_dir}
     assert os.path.join(ros_home_dir, 'test_results') == get_test_results_dir(env=env)
 
-    env = {'ROS_ROOT': get_ros_root()}
+    env = {ROS_ROOT: get_ros_root()}
     assert os.path.join(home_dir, '.ros', 'test_results') == get_test_results_dir(env=env)
 
     # test default assignment of env. Don't both checking return value as we would duplicate get_test_results_dir
@@ -110,10 +112,10 @@ def test_get_ros_home():
     home_dir = os.path.expanduser('~')
 
     # ROS_HOME has precedence
-    env = {'ROS_ROOT': get_ros_root(), 'ROS_HOME': ros_home_dir}
+    env = {ROS_ROOT: get_ros_root(), 'ROS_HOME': ros_home_dir}
     assert ros_home_dir == get_ros_home(env=env)
 
-    env = {'ROS_ROOT': get_ros_root()}
+    env = {ROS_ROOT: get_ros_root()}
     assert os.path.join(home_dir, '.ros') == get_ros_home(env=env)
 
     # test default assignment of env. Don't both checking return value

@@ -59,7 +59,7 @@ def list_by_path(manifest_name, path, cache):
     path = os.path.abspath(path)
     basename = os.path.basename
     for d, dirs, files in os.walk(path, topdown=True, followlinks=True):
-        if 'CATKIN_IGNORE' in files:
+        if 'AMENT_IGNORE' in files:
             del dirs[:]
             continue  # leaf
         if PACKAGE_FILE in files:
@@ -190,7 +190,7 @@ class ManifestManager(object):
         :returns: complete list of package names in ROS environment, ``[str]``
         """
         self._update_location_cache()
-        return self._location_cache.keys()
+        return list(self._location_cache.keys())
 
     def get_path(self, name):
         """
@@ -463,10 +463,10 @@ def get_stack_version_by_dir(stack_dir):
     :raises: :exc:`IOError`
     :raises: :exc:`InvalidStack`
     """
-    catkin_stack_filename = os.path.join(stack_dir, 'stack.xml')
-    if os.path.isfile(catkin_stack_filename):
+    stack_filename = os.path.join(stack_dir, 'stack.xml')
+    if os.path.isfile(stack_filename):
         try:
-            stack = parse_stack_file(catkin_stack_filename)
+            stack = parse_stack_file(stack_filename)
             return stack.version
         except InvalidStack:
             pass
